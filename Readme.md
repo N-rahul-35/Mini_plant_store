@@ -99,9 +99,10 @@ For MongoDB Atlas: mongodb+srv://rahul:password@cluster.mongodb.net/plant
 ```
 
 PORT=4000
-MONGO_URI=mongodb://localhost:27017/rahuldb
+MONGO_URI=mongodb://localhost:27017
 CORS_ORIGIN=http://localhost:3000
 NODE_ENV=development
+MONGODB_URI= mongodb+srv://rahul:<password>@cluster0.00houn3.mongodb.net/plant
 
 ```
 
