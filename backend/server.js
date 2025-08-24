@@ -228,13 +228,21 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// CORS configuration
+// ✅ CORS configuration
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",")
+  : ["http://localhost:3000", "https://mini-plant-store.vercel.app"];
+
 app.use(
   cors({
-    origin:
-      process.env.CORS_ORIGIN ||
-      "http://localhost:3000" ||
-      "https://mini-plant-store.vercel.app",
+    origin: function (origin, callback) {
+      // allow requests with no origin (mobile apps, curl, Postman)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -297,11 +305,6 @@ connectDB();
 
 // Routes
 app.use("/api/plants", plantRoutes);
-
-// Health check
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok" });
-});
 
 // Health check
 app.get("/api/health", async (req, res) => {
