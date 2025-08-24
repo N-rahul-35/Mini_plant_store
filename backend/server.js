@@ -227,15 +227,22 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 app.use(limiter);
-
-// ✅ CORS configuration
-const allowedOrigins = process.env.CORS_ORIGIN
-  ? process.env.CORS_ORIGIN.split(",")
-  : ["http://localhost:3000", "https://mini-plant-store.vercel.app"];
+// ✅ CORS configuration must be before Helmet and routes
+const allowedOrigins = [
+  "http://localhost:3000", // local dev
+  "https://mini-plant-store.vercel.app", // your Vercel app
+];
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // allow Postman, curl
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("CORS not allowed for " + origin));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
