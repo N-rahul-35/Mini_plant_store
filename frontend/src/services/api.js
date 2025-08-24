@@ -13,7 +13,7 @@ import axios from "axios";
 const api = axios.create({
   baseURL:
     process.env.REACT_APP_API_URL ||
-    "https://mini-plant-store-mq32.onrender.com/api",
+    "https://mini-plant-store-1-l2wf.onrender.com/api",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
