@@ -8,19 +8,16 @@ require("dotenv").config();
 const plantRoutes = require("./routes/Plants");
 const app = express();
 
-// ✅ CORS configuration FIRST - before all other middleware
+// ✅ Correct CORS configuration
 const allowedOrigins = [
-  "http://localhost:3000", // local dev
-  "https://mini-plant-store.vercel.app", // your actual Vercel app URL
-  "https://mini-plant-store-gbmm-4ul3h8unk-itb074s-projects.vercel.app/", // replace with your real Vercel URL
+  "http://localhost:3000",
+  "https://mini-plant-store-seven.vercel.app", // ✅ your Vercel app
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps, Postman, curl)
-      if (!origin) return callback(null, true);
-
+      if (!origin) return callback(null, true); // allow tools like Postman
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       } else {
@@ -36,14 +33,12 @@ app.use(
 
 console.log("✅ CORS allowed origins:", allowedOrigins);
 
-// Security middleware (only once!)
 app.use(
   helmet({
     crossOriginEmbedderPolicy: false,
   })
 );
 
-// Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -56,11 +51,9 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Body parsing middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Request logging in development
 if (process.env.NODE_ENV === "development") {
   app.use((req, res, next) => {
     console.log(`${req.method} ${req.path} - ${new Date().toISOString()}`);
@@ -72,13 +65,10 @@ if (process.env.NODE_ENV === "development") {
 // Database connection
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(
-      process.env.MONGODB_URI || "mongodb://localhost:27017/rahuldb",
-      {
-        serverSelectionTimeoutMS: 5000,
-        socketTimeoutMS: 45000,
-      }
-    );
+    const conn = await mongoose.connect(process.env.MONGODB_URI || "", {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
     console.log(`✅ Connected to MongoDB: ${conn.connection.host}`);
     console.log(`📁 Database: ${conn.connection.name}`);
   } catch (err) {
@@ -87,7 +77,6 @@ const connectDB = async () => {
   }
 };
 
-// Handle connection events
 mongoose.connection.on("disconnected", () => {
   console.log("❌ MongoDB disconnected");
 });
@@ -95,7 +84,6 @@ mongoose.connection.on("error", (err) => {
   console.error("❌ MongoDB error:", err);
 });
 
-// Graceful shutdown
 process.on("SIGINT", async () => {
   console.log("\n🛑 Received SIGINT. Gracefully shutting down...");
   try {
@@ -108,10 +96,9 @@ process.on("SIGINT", async () => {
   }
 });
 
-// Connect to database
 connectDB();
 
-// Routes
+// ✅ Routes
 app.use("/api/plants", plantRoutes);
 
 // Health check
@@ -129,7 +116,6 @@ app.get("/api/health", async (req, res) => {
   });
 });
 
-// API documentation endpoint
 app.get("/api", (req, res) => {
   res.json({
     name: "Plant Management API",
@@ -139,11 +125,9 @@ app.get("/api", (req, res) => {
       health: "/api/health",
     },
     database: "Plants (rahuldb)",
-    documentation: "Visit /api/plants for plant management endpoints",
   });
 });
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({
     error: "Route not found",
@@ -152,7 +136,6 @@ app.use((req, res) => {
   });
 });
 
-// Global error handler
 app.use((err, req, res, next) => {
   console.error("Error:", err.stack);
 
@@ -194,13 +177,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📱 Environment: ${process.env.NODE_ENV || "development"}`);
   console.log(`🌐 API Base URL: http://localhost:${PORT}/api`);
-  console.log(`❤️  Health Check: http://localhost:${PORT}/api/health`);
 });
 
 server.on("error", (err) => {
