@@ -13,23 +13,23 @@ const allowedOrigins = [
   "http://localhost:3000",
   "https://mini-plant-store-seven.vercel.app", // ✅ your Vercel app
 ];
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow tools like Postman
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        console.log("❌ CORS blocked origin:", origin);
-        return callback(new Error("CORS not allowed for " + origin));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use(cors());
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin) return callback(null, true); // allow tools like Postman
+//       if (allowedOrigins.includes(origin)) {
+//         return callback(null, true);
+//       } else {
+//         console.log("❌ CORS blocked origin:", origin);
+//         return callback(new Error("CORS not allowed for " + origin));
+//       }
+//     },
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
 
 console.log("✅ CORS allowed origins:", allowedOrigins);
 
