@@ -33,6 +33,7 @@ A mini e‑commerce app where customers can browse plants, search & filter by na
 **Backend:** Node.js, Express, Mongoose, CORS, Helmet, morgan
 
 **Database:** Local MongoDB (`mongodb://localhost:27017/urvann_plants`)
+For MongoDB Atlas: mongodb+srv://rahul:password@cluster.mongodb.net/plant
 
 **Tooling:** ESLint, Prettier, npm scripts
 
@@ -40,25 +41,40 @@ A mini e‑commerce app where customers can browse plants, search & filter by na
 
 ## 📁 Project Structure
 
-```
-D:/plant-store/
+```Mini-plant-store/
 ├── backend/
+│   ├── models/
+│   │   └── Plant.js
+│   ├── routes/
+│   │   └── plants.js
+│   ├── middleware/
+│   │   └── validation.js
 │   ├── config/
-│   ├── data/seedData.js
-│   ├── middleware/validations.js
-│   ├── models/plants.js
-│   ├── routes/plants.js
-│   ├── node_modules/
-│   ├── .env
-│   ├── package.json
-│   └── server.js
-└── frontend/
-    ├── public/
-    ├── src/App.js
-    ├── node_modules/
-    ├── .env
-    ├── package.json
-```
+│   │   └── database.js
+│   ├── data/
+│   │   └── seedData.js
+│   ├── server.js
+│   └── package.json
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── PlantCard.js
+│   │   │   ├── PlantGrid.js
+│   │   │   ├── SearchFilter.js
+│   │   │   ├── AddPlantForm.js
+│   │   │   └── LoadingSpinner.js
+│   │   ├── hooks/
+│   │   │   └── usePlants.js
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   ├── utils/
+│   │   │   └── constants.js
+│   │   ├── App.js
+│   │   ├── App.css
+│   │   └── index.js
+│   ├── public/
+│   └── package.json
+└── README.md
 
 ---
 
@@ -93,14 +109,14 @@ NODE_ENV=development
 
 ```
 
-````
+```
 
 ### Seed Database
 
 ```bash
 cd backend
 npm run seed
-````
+```
 
 ### Run the App
 
@@ -149,7 +165,7 @@ npm run dev  # Vite or npm start for CRA
 
 ---
 
-## Data added on mongodb
+## Data added on mongodb local
 
 -open mongoshell type mongosh
 show db using show dbs
